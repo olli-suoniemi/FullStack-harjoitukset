@@ -10,20 +10,33 @@ const CalculateAverage = (props) => {
   if (props.good + props.neutral + props.bad === 0) {
     return (
       <div>
-        0
+        average: 0
       </div>
     )
-    
   }
   return (
     <div>
-      {(props.good * 1 + props.bad * -1) / (props.good + props.neutral + props.bad)}
+      average: {(props.good * 1 + props.bad * -1) / (props.good + props.neutral + props.bad)}
+    </div>
+  )
+}
+
+const CalculatePositive = (props) => {
+  if (props.all === 0) {
+    return (
+      <div>
+        positive: 0 %
+      </div>
+    )
+  }
+  return (
+    <div>
+      positive: {(props.good / props.all) * 100} %
     </div>
   )
 }
 
 const App = () => {
-  // tallenna napit omaan tilaansa
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
@@ -50,8 +63,9 @@ const App = () => {
       good {good} <br></br>
       neutral {neutral} <br></br>
       bad {bad} <br></br>
+      all {good + neutral + bad} <br></br>
       <CalculateAverage good={good} neutral={neutral} bad={bad} />
-      all {good + neutral + bad}
+      <CalculatePositive good={good} all={good + neutral + bad} />
     </div>
   )
 }
