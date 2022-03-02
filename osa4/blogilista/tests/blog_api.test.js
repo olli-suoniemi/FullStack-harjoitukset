@@ -44,7 +44,7 @@ test('a valid blog can be added', async() => {
         "author": "Matilda Tonttu",
         "title": "Mettäsväen juttuja",
         "url": "www.elf-things.com",
-        "likes": "14"
+        "likes": 14
     }
 
     await api
@@ -93,6 +93,48 @@ test('a blog without title and url -fields will return "400 bad request"', async
     const blogsAtEnd = await helper.blogsInDb()
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
 })
+
+test('deletion of a blog succeeds with status code 204 if deletion id is valid', async() => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .expect(204)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    expect(blogsAtEnd).toHaveLength(
+        helper.initialBlogs.length - 1
+    )
+
+    const authors = blogsAtEnd.map(blog => blog.author)
+    expect(authors).not.toContain(blogToDelete.author)
+})
+
+test('updation of a blog succeeds with status code 204 if updation id is valid', async() => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate= blogsAtStart[0]
+
+    const newBlog = {
+        "author": "Matias Tonttu",
+        "title": "Mettäsväen salaisuudet",
+        "url": "www.elf-world.com",
+        "likes": 75
+    }
+
+    await api
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .send(newBlog)
+        .expect(204)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    const updatedBlog = blogsAtEnd[0]
+
+    expect(updatedBlog.likes).toEqual(newBlog.likes)
+})
+
+
 
 afterAll(() => {
   mongoose.connection.close()
