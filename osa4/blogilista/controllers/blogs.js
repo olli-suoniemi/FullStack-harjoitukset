@@ -9,8 +9,8 @@ blogRouter.get('/', async (request, response) => {
   
 blogRouter.post('/', async (request, response) => {
     const body = request.body
-
-    const user = await User.findById(body.userId)
+    
+    const user = request.user
 
     if (body.title === undefined & body.url === undefined) {
         response.status(400).end()
@@ -47,8 +47,21 @@ blogRouter.get('/:id', async (request, response) => {
 })
 
 blogRouter.delete('/:id', async (request, response) => {
-    await Blog.findByIdAndRemove(request.params.id)
-    response.status(204).end()
+    const body = request.body
+    const user = request.user
+    
+    const blog = await Blog.findById(request.params.id);
+
+    if ( !blog ) {
+        return response.status(401).json( {error: "Invalid blog, it doesn't exist"})
+    }
+    
+    if ( user._id.toString() !== blog.user.toString() ) {
+        return response.status(405).json( {error: "Deletion of a blog failed due to user haven't created this blog" })
+    } else {
+        await Blog.findByIdAndRemove(request.params.id)
+        response.status(204).end()
+    }
 })
 
 blogRouter.put('/:id', async (request, response) => {
