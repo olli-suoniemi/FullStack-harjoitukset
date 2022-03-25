@@ -17,6 +17,28 @@ router.post('/', async (request, response) => {
     return response.status(401).json({ error: 'token missing or invalid' })
   }
 
+  if (!request.body || !request.body.author || !request.body.title || !request.body.url) {
+    return response.status(400).json({ error: 'the blog is missing vital information' })
+  }
+
+  const { title, url, likes } = request.body
+
+  const existingBlogByTitle = await Blog.findOne({ title })
+
+  if (existingBlogByTitle) {
+    return response.status(400).json({ error: 'the blog with this title already exists' })
+  }
+
+  const existingBlogByUrl = await Blog.findOne({ url })
+
+  if (existingBlogByUrl) {
+    return response.status(400).json({ error: 'the blog with this url already exists' })
+  }
+
+  if (!likes) {
+    request.body = { ...request.body, likes: 0 }
+  }
+
   const user = request.user
   const blog = new Blog({ ...request.body, user: user.id })
 

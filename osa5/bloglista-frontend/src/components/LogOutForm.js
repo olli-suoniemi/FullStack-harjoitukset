@@ -1,10 +1,10 @@
-import React from "react"
+import React from 'react'
 
 const LogOutForm = ({ handleLogout }) => {
     return(
         <form onSubmit={handleLogout}>
             <div>
-            <button type="logout">logout</button>
+                <button type="logout">logout</button>
             </div>
         </form>
     )
