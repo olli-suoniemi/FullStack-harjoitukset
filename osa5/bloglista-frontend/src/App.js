@@ -16,16 +16,16 @@ const App = () => {
     const blogFormRef = useRef()
 
     useEffect(() => {
-        getAllBlogs()
-    }, [])
-
-    useEffect(() => {
         const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
         if (loggedUserJSON) {
             const user = JSON.parse(loggedUserJSON)
             setUser(user)
             blogService.setToken(user.token)
         }
+    }, [])
+
+    useEffect(() => {
+        getAllBlogs()
     }, [])
 
     const getAllBlogs = async () => {
@@ -72,7 +72,7 @@ const App = () => {
         try {
             blogFormRef.current.toggleVisibility()
             const response = await blogService.create(blogObject)
-            setBlogs(blogs.concat(response))
+            setBlogs(blogs.concat({ ...response, user }))
             notify('Added a new blog')
         } catch (error) {
             notify('Blog must contain author, title and url', 'alert')
