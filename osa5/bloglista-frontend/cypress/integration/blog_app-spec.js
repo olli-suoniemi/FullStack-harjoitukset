@@ -39,9 +39,9 @@ describe('Blog app', function() {
     describe('When logged in', function() {
         beforeEach(function() {
             cy.login({ username: 'testman', password: 'sekret' })
-            cy.createBlog({ author: 'someone', title: 'something', url: 'somewhere' })
+            cy.createBlog({ author: 'someone', title: 'something', url: 'somewhere', likes: 4 })
             cy.createBlog({ author: 'x', title: 'xxx', url: 'xxx.com' })
-            cy.createBlog({ author: 'y', title: 'yyy', url: 'yyy.com' })
+            cy.createBlog({ author: 'y', title: 'yyy', url: 'yyy.com', likes: 5 })
         })
 
         it('A blog can be created', function() {
@@ -67,9 +67,8 @@ describe('Blog app', function() {
         })
 
         it.only('Blogs are sorted by likes', function() {
-            cy.contains('xxx').find('button').click()
-            cy.contains('xxx').parent().find('button').should('contain', 'hide')
-            cy.get('#like-button').click()
+            cy.get('.blog').eq(0).should('contain', 'yyy')
+            cy.get('.blog').eq(2).should('contain', 'xxx')
         })
     })
 })
