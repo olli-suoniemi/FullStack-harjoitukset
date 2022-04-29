@@ -1,0 +1,15 @@
+{
+  "name": "books-and-authors",
+  "version": "1.0.0",
+  "description": "",
+  "main": "library-backend.js",
+  "scripts": {
+    "start": "nodemon library-backend.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^3.6.7",
+    "graphql": "^16.4.0"
+  }
+}
