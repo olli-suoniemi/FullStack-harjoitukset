@@ -17,7 +17,7 @@ export const updateCache = (cache, query, addedBook) => {
   }
 
   cache.updateQuery(query, (data) => {
-    console.log(data);
+    console.log('data:', data);     // why data is null?
     return {
       allBooks: uniqByName(data.allBooks.concat(addedBook)),
     }
@@ -42,10 +42,14 @@ const App = () => {
   }, [page])
 
   useSubscription(BOOK_ADDED, {
-    onSubscriptionData: ({ subscriptionData }) => {
+    onSubscriptionData: ({ subscriptionData, client }) => {
       const addedBook = subscriptionData.data.bookAdded
+      console.log('addedBook:', addedBook);
       window.alert('New book got added!')
-      updateCache(client.cache, { query: ALL_BOOKS }, addedBook)
+      client.cache.updateQuery({ query: ALL_BOOKS }, data => {
+        console.log('data:', data);   // data is null?
+      })
+      // updateCache(client.cache, { query: ALL_BOOKS }, addedBook)
     }
   })
 
